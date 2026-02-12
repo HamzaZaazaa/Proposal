@@ -35,13 +35,29 @@
 
         /* Book Modal */
         #bookModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
-        .book-page { background: #fffafa; width: 90%; height: 80vh; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; border-left: 10px solid var(--royal-gold); }
-        .book-text { flex-grow: 1; overflow-y: auto; font-family: 'Playfair Display', serif; text-align: left; }
+        .book-page { background: #fffafa; width: 92%; height: 85vh; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; border-left: 10px solid var(--royal-gold); position: relative; }
+        .book-text { flex-grow: 1; overflow-y: auto; font-family: 'Playfair Display', serif; text-align: left; padding-bottom: 20px; }
         .book-text h2 { font-family: 'Dancing Script', cursive; color: var(--deep-rose); text-align: center; margin-top: 0; }
-        .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .gallery img { width: 100%; height: 90px; object-fit: cover; border-radius: 10px; border: 2px solid #fff; }
-        .nav-btns { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; }
+
+        /* Beautiful Gallery Grid */
+        .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; animation: fadeIn 1s ease; }
+        .gallery img { 
+            width: 100%; height: 110px; object-fit: cover; border-radius: 12px; 
+            border: 3px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            transition: 0.3s; cursor: zoom-in;
+        }
+        
+        /* Lightbox effect when tapping images */
+        .gallery img.expanded {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(2.5);
+            z-index: 3000; width: 80vw; height: auto; cursor: zoom-out; box-shadow: 0 0 100px rgba(0,0,0,0.5);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .nav-btns { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
         .nav-btns button { background: none; color: var(--primary-pink); width: auto; padding: 5px; font-size: 0.9rem; }
+        
         .heart { position: absolute; color: rgba(255, 77, 109, 0.4); font-size: 20px; pointer-events: none; animation: floatUp 4s linear infinite; }
         @keyframes floatUp { from { transform: translateY(110vh); } to { transform: translateY(-10vh); } }
     </style>
@@ -74,7 +90,7 @@
             { title: "Chapter I: The Echo", text: "We started as two names on a list, two faces in a crowded room on a 'Welcome Day' that felt ordinary at the time.\n\nI didn’t know then that the girl sitting across the room would eventually become the reason I look forward to the morning." },
             { title: "Chapter II: The Shift", text: "Then the world moved us closer. New titles, new reasons to speak.\n\nWhat started as 'work' became 'us.' I began to notice the way you carried yourself—with a grace that seemed effortless." },
             { title: "Chapter III: The Thread", text: "The office walls eventually faded, but our conversation didn’t.\n\nWe found a new home in the glow of our screens, weaving a thread of words that stretched from morning until the stars came out." },
-            { title: "Chapter IV: The Song", text: "I’ve learned the map of your reactions now. When I tell you that you are too bright for my eyes, you make those quiet, cute little noises—the ones that tell me you can’t quite handle the praise." },
+            { title: "Chapter IV: The Song", text: "I’ve learned the map of your reactions now. When I tell you that you are too bright for my eyes, or ask how it’s possible for someone to go to such lengths to be beautiful, you make those quiet, cute little noises—the ones that tell me you can’t quite handle the praise." },
             { title: "Chapter V: The Warmth", text: "Being near you feels like finally standing in the right place.\n\nIt is a peaceful warmth, but it is also a storm in my chest. When you smile at me, my heart pounds with a rhythm I can’t control." },
             { title: "Chapter VI: The Realization", text: "I wrote this because words spoken out loud sometimes get lost in the heartbeat I feel when you're near.\n\nI eventually reached a point where 'just friends' felt like a beautiful book with the most important chapter missing." },
             { 
@@ -88,33 +104,23 @@
         let yesScale = 1;
         let locationIndex = 0;
 
-        // PRE-DETERMINED LOCATIONS (Percent of screen)
-        // These are safe spots: Top Left, Bottom Right, Top Right, Middle Left, Bottom Left
         const locations = [
-            { x: 10, y: 10 },
-            { x: 70, y: 80 },
-            { x: 70, y: 10 },
-            { x: 10, y: 50 },
-            { x: 10, y: 80 },
-            { x: 40, y: 20 }
+            { x: 15, y: 15 }, { x: 75, y: 75 }, { x: 75, y: 15 },
+            { x: 15, y: 50 }, { x: 15, y: 75 }, { x: 45, y: 20 }
         ];
 
         function moveButton(e) {
             if(e) e.preventDefault();
             const btn = document.getElementById('noBtn');
             const loc = locations[locationIndex];
-
             btn.style.position = 'fixed';
             btn.style.left = loc.x + '%';
             btn.style.top = loc.y + '%';
-
-            // Cycle through the locations
             locationIndex = (locationIndex + 1) % locations.length;
-
-            // Grow Yes button
-            yesScale += 0.2;
+            
+            yesScale += 0.22;
             const yesBtn = document.getElementById('yesBtn');
-            if (yesScale > 3.5) yesScale = 3.5;
+            if (yesScale > 3.8) yesScale = 3.8;
             yesBtn.style.transform = `scale(${yesScale})`;
         }
 
@@ -129,11 +135,26 @@
         function closeBook() { document.getElementById('bookModal').style.display = 'none'; }
         function changePage(step) { currentPage += step; updateBookContent(); }
 
+        function toggleExpand(img) {
+            img.classList.toggle('expanded');
+        }
+
         function updateBookContent() {
             const content = document.getElementById('bookContent');
             const pageInfo = document.getElementById('pageIndicator');
             const ch = chapters[currentPage];
-            let galleryHtml = ch.isFinal ? `<div class="gallery"><img src="photo1.jpg" onerror="this.style.display='none'"><img src="photo2.jpg" onerror="this.style.display='none'"><img src="photo3.jpg" onerror="this.style.display='none'"><img src="photo4.jpg" onerror="this.style.display='none'"></div>` : "";
+            
+            let galleryHtml = "";
+            if (ch.isFinal) {
+                galleryHtml = `
+                <div class="gallery">
+                    <img src="photo1.jpg" onclick="toggleExpand(this)" onerror="this.style.display='none'">
+                    <img src="photo2.jpg" onclick="toggleExpand(this)" onerror="this.style.display='none'">
+                    <img src="photo3.jpg" onclick="toggleExpand(this)" onerror="this.style.display='none'">
+                    <img src="photo4.jpg" onclick="toggleExpand(this)" onerror="this.style.display='none'">
+                </div>`;
+            }
+
             content.innerHTML = `<h2>${ch.title}</h2><p style="white-space: pre-line;">${ch.text}</p>${galleryHtml}`;
             pageInfo.innerText = `Page ${currentPage + 1} of ${chapters.length}`;
             document.getElementById('prevBtn').disabled = (currentPage === 0);
