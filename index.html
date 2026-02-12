@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Question</title>
+    <title>For My Queen 👑</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
             display: flex;
@@ -11,38 +12,62 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #ffe6e6;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(#ff9a9e 0%, #fecfef 100%);
+            font-family: 'Poppins', sans-serif;
             text-align: center;
             overflow: hidden;
         }
+
         #container {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-width: 400px;
-            position: relative;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            max-width: 450px;
+            z-index: 10;
         }
-        h1 { color: #d63384; margin-bottom: 30px; }
-        .buttons { display: flex; justify-content: space-around; align-items: center; height: 50px; }
+
+        h1 { color: #d63384; font-size: 2rem; margin-bottom: 30px; }
+        
+        .buttons { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            align-items: center; 
+            min-height: 100px;
+        }
         
         button {
-            padding: 10px 25px;
-            font-size: 18px;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         #yesBtn { background-color: #ff4d6d; color: white; }
-        #yesBtn:hover { transform: scale(1.1); }
 
         #noBtn {
-            background-color: #adb5bd;
+            background-color: #6c757d;
             color: white;
-            position: absolute; /* Needed for the floating effect */
+            position: absolute;
+        }
+
+        /* Floating Hearts Style */
+        .heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.4);
+            font-size: 20px;
+            user-select: none;
+            animation: float Up 5s linear infinite;
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            to { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
@@ -57,21 +82,50 @@
     </div>
 
     <script>
+        // Create background hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 400);
+
+        let yesScale = 1;
+
         function moveButton() {
             const btn = document.getElementById('noBtn');
-            // Calculate random positions within the screen
             const x = Math.random() * (window.innerWidth - btn.offsetWidth);
             const y = Math.random() * (window.innerHeight - btn.offsetHeight);
             
             btn.style.left = x + 'px';
             btn.style.top = y + 'px';
+
+            // Make Yes button slightly bigger each time she misses
+            yesScale += 0.15;
+            document.getElementById('yesBtn').style.transform = `scale(${yesScale})`;
         }
 
         function sayYes() {
+            // Trigger Confetti
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ffafbd', '#ffffff']
+            });
+
             document.getElementById('container').innerHTML = `
-                <h1 style="font-size: 24px;">I knew u would say YES! ❤️</h1>
-                <p>Thank you for choosing me love. I will forever cherish you and treat you well my queen.</p>
-                <div style="font-size: 50px;">👑✨</div>
+                <h1 style="color: #ff4d6d;">I knew u would say YES! ❤️</h1>
+                <p style="font-size: 1.2rem; line-height: 1.6;">
+                    Thank you for choosing me love. <br>
+                    I will forever cherish you and <br>
+                    treat you well my queen. 👑
+                </p>
+                <div style="font-size: 40px; margin-top: 20px;">🌹✨🥂</div>
             `;
         }
     </script>
