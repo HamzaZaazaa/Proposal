@@ -15,7 +15,7 @@
             background: linear-gradient(#ff9a9e 0%, #fecfef 100%);
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
-            touch-action: manipulation; /* Prevents zooming on fast taps */
+            touch-action: manipulation;
         }
 
         #container {
@@ -26,16 +26,17 @@
             width: 80%;
             max-width: 400px;
             z-index: 10;
-            position: relative;
+            text-align: center;
         }
 
-        h1 { color: #d63384; font-size: 1.5rem; }
+        h1 { color: #d63384; font-size: 1.5rem; margin-bottom: 20px; }
         
         .buttons { 
-            margin-top: 30px;
             display: flex; 
             justify-content: center; 
             gap: 20px; 
+            min-height: 60px; /* Space for buttons */
+            position: relative;
         }
         
         button {
@@ -45,15 +46,16 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.1s ease;
         }
         
-        #yesBtn { background-color: #ff4d6d; color: white; position: relative; z-index: 11; }
+        #yesBtn { background-color: #ff4d6d; color: white; transition: 0.2s; }
 
         #noBtn {
             background-color: #6c757d;
             color: white;
-            position: fixed; /* Fixed works better for mobile jumping */
+            /* These lines ensure it's visible at the start */
+            position: relative; 
+            z-index: 12;
             transition: 0.1s ease;
             touch-action: none;
         }
@@ -77,7 +79,7 @@
         <h1 id="question">Will you be my forever? 💍</h1>
         <div class="buttons">
             <button id="yesBtn" onclick="sayYes()">Yes</button>
-            <button id="noBtn" ontouchstart="moveButton()" onmouseover="moveButton()">No</button>
+            <button id="noBtn" onmouseover="moveButton()" ontouchstart="moveButton()">No</button>
         </div>
     </div>
 
@@ -98,7 +100,9 @@
         function moveButton() {
             const btn = document.getElementById('noBtn');
             
-            // Calculate safe zones so it doesn't leave the screen
+            // Once touched, we switch to 'fixed' so it can fly anywhere on the screen
+            btn.style.position = 'fixed';
+            
             const padding = 50;
             const maxX = window.innerWidth - btn.offsetWidth - padding;
             const maxY = window.innerHeight - btn.offsetHeight - padding;
@@ -109,6 +113,7 @@
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
 
+            // Grow the Yes button
             yesScale += 0.2;
             document.getElementById('yesBtn').style.transform = `scale(${yesScale})`;
         }
@@ -118,7 +123,7 @@
             document.getElementById('container').innerHTML = `
                 <h1 style="color: #ff4d6d;">I knew u would say YES! ❤️</h1>
                 <p>Thank you for choosing me love. I will forever cherish you and treat you well my queen. 👑</p>
-                <div style="font-size: 40px;">🌹✨</div>
+                <div style="font-size: 40px; margin-top: 15px;">🌹✨</div>
             `;
         }
     </script>
