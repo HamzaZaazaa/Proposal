@@ -1,103 +1,172 @@
-<script>
-    const chapters = [
-        { title: "Chapter I: The Echo", text: "We started as two names on a list, two faces in a crowded room on a 'Welcome Day' that felt ordinary at the time.\n\nI didn’t know then that the girl sitting across the room would eventually become the reason I look forward to the morning." },
-        { title: "Chapter II: The Shift", text: "Then the world moved us closer. New titles, new reasons to speak.\n\nWhat started as 'work' became 'us.' I began to notice the way you carried yourself—with a grace that seemed effortless and a kindness that felt like sunlight." },
-        { title: "Chapter III: The Thread", text: "The office walls eventually faded, but our conversation didn’t.\n\nWe found a new home in the glow of our screens, weaving a thread of words that stretched from morning until the stars came out." },
-        { title: "Chapter IV: The Song", text: "I’ve learned the map of your reactions now. When I tell you that you are too bright for my eyes, or ask how it’s possible for someone to go to such lengths to be beautiful, you make those quiet, cute little noises." },
-        { title: "Chapter V: The Warmth", text: "Being near you feels like finally standing in the right place.\n\nIt is a peaceful warmth, but it is also a storm in my chest. When you smile at me, my heart pounds with a rhythm I can’t control." },
-        { title: "Chapter VI: The Realization", text: "I wrote this because words spoken out loud sometimes get lost in the heartbeat I feel when you're near. 'Just friends' felt like a beautiful book with the most important chapter missing." },
-        { 
-            title: "The Final Page: My Queen", 
-            isFinal: true,
-            text: "Now that we are walking this path together, I’ve fallen for you faster than I ever thought possible. I find myself constantly desiring the warmth of your hugs and the sweetness of your kisses. I will forever treat you well, my Queen." 
-        }
-    ];
-
-    let currentPage = 0;
-    let yesScale = 1;
-
-    function createHeart() {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heart.innerHTML = '❤️';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 4000);
-    }
-    setInterval(createHeart, 500);
-
-    function moveButton(event) {
-        if(event) event.preventDefault();
-        const btn = document.getElementById('noBtn');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Queen 👑</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Playfair+Display:ital,wght@0,400;1,600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --primary-pink: #ff4d6d; --royal-gold: #d4af37; --deep-rose: #c9184a; }
         
-        // Get the actual visible width and height of the screen
-        const screenW = window.innerWidth;
-        const screenH = window.innerHeight;
-
-        // Dimensions of the button itself
-        const btnW = btn.offsetWidth;
-        const btnH = btn.offsetHeight;
-
-        // Calculate "Safe Zone" (10% margin from all edges)
-        const marginW = screenW * 0.1;
-        const marginH = screenH * 0.1;
-
-        const minX = marginW;
-        const maxX = screenW - btnW - marginW;
-        const minY = marginH;
-        const maxY = screenH - btnH - marginH;
-
-        // Generate new coordinates within the safe zone
-        const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-        const randomY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
-
-        // Apply styles
-        btn.style.position = 'fixed';
-        btn.style.transition = 'all 0.2s ease'; // Smooth glide
-        btn.style.left = randomX + 'px';
-        btn.style.top = randomY + 'px';
-        btn.style.margin = '0'; // Remove any centering margins
-
-        // Scale Yes Button
-        yesScale += 0.15;
-        const yesBtn = document.getElementById('yesBtn');
-        if(screenW < 600 && yesScale > 3.5) yesScale = 3.5; 
-        yesBtn.style.transform = `scale(${yesScale})`;
-    }
-
-    function sayYes() {
-        confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
-        document.getElementById('question').innerText = "I knew you would say YES! ❤️";
-        document.getElementById('mainButtons').style.display = 'none';
-        document.getElementById('storyBtn').style.display = 'block';
-    }
-
-    function openBook() { document.getElementById('bookModal').style.display = 'flex'; updateBookContent(); }
-    function closeBook() { document.getElementById('bookModal').style.display = 'none'; }
-    function changePage(step) { currentPage += step; updateBookContent(); }
-
-    function updateBookContent() {
-        const content = document.getElementById('bookContent');
-        const pageInfo = document.getElementById('pageIndicator');
-        const ch = chapters[currentPage];
-        
-        let galleryHtml = "";
-        if (ch.isFinal) {
-            galleryHtml = `
-                <div class="gallery">
-                    <img src="photo1.jpg" alt="1" onerror="this.style.display='none'">
-                    <img src="photo2.jpg" alt="2" onerror="this.style.display='none'">
-                    <img src="photo3.jpg" alt="3" onerror="this.style.display='none'">
-                    <img src="photo4.jpg" alt="4" onerror="this.style.display='none'">
-                </div>`;
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            font-family: 'Poppins', sans-serif; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        content.innerHTML = `<h2>${ch.title}</h2><p style="white-space: pre-line;">${ch.text}</p>${galleryHtml}`;
-        pageInfo.innerText = `Page ${currentPage + 1} of ${chapters.length}`;
+        /* Main UI */
+        #container {
+            background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px);
+            padding: 30px; border-radius: 25px; text-align: center;
+            width: 85%; max-width: 350px; z-index: 100;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        h1 { font-family: 'Playfair Display', serif; color: var(--deep-rose); font-size: 1.6rem; margin: 0 0 25px 0; }
+        .buttons { display: flex; justify-content: center; gap: 15px; min-height: 80px; align-items: center; position: relative; }
         
-        document.getElementById('prevBtn').disabled = (currentPage === 0);
-        document.getElementById('nextBtn').disabled = (currentPage === chapters.length - 1);
-        content.scrollTop = 0;
-    }
-</script>
+        button { padding: 12px 28px; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; font-family: 'Poppins'; transition: transform 0.2s; }
+        #yesBtn { background: var(--primary-pink); color: white; z-index: 10; }
+        #noBtn { background: #f8f9fa; color: #6c757d; border: 1px solid #ddd; position: absolute; z-index: 1000; touch-action: none; }
+        
+        .story-btn { background: var(--royal-gold); color: white; display: none; margin-top: 20px; width: 100%; }
+
+        /* Book Modal */
+        #bookModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center;
+        }
+
+        .book-page {
+            background: #fffafa; width: 88%; height: 80vh; padding: 25px;
+            border-radius: 20px; display: flex; flex-direction: column;
+            border-left: 10px solid var(--royal-gold); box-sizing: border-box;
+        }
+
+        .book-text { flex-grow: 1; overflow-y: auto; font-family: 'Playfair Display', serif; text-align: left; }
+        .book-text h2 { font-family: 'Dancing Script', cursive; color: var(--deep-rose); text-align: center; margin-top: 0; }
+        
+        .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
+        .gallery img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        .nav-btns { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; }
+        .nav-btns button { background: none; color: var(--primary-pink); width: auto; padding: 5px; font-size: 0.9rem; }
+
+        .heart { position: absolute; color: rgba(255, 77, 109, 0.4); font-size: 20px; pointer-events: none; animation: floatUp 4s linear infinite; z-index: 1; }
+        @keyframes floatUp { from { transform: translateY(110vh); opacity: 1; } to { transform: translateY(-10vh); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <h1 id="question">Will you be my forever? 💍</h1>
+        <div class="buttons" id="mainButtons">
+            <button id="yesBtn" onclick="sayYes()">Yes</button>
+            <button id="noBtn" onmouseover="moveButton()" ontouchstart="moveButton()">No</button>
+        </div>
+        <button id="storyBtn" class="story-btn" onclick="openBook()">Open My Heart 📖</button>
+    </div>
+
+    <div id="bookModal">
+        <div class="book-page">
+            <div id="bookContent" class="book-text"></div>
+            <div class="nav-btns">
+                <button id="prevBtn" onclick="changePage(-1)">← Back</button>
+                <span id="pageIndicator" style="font-size: 0.8rem; color: #888;"></span>
+                <button id="nextBtn" onclick="changePage(1)">Next →</button>
+            </div>
+            <button onclick="closeBook()" style="background:none; color:#bbb; font-size:10px; margin-top:10px; width:100%;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const chapters = [
+            { title: "Chapter I: The Echo", text: "We started as two names on a list, two faces in a crowded room on a 'Welcome Day' that felt ordinary at the time.\n\nI didn’t know then that the girl sitting across the room would eventually become the reason I look forward to the morning." },
+            { title: "Chapter II: The Shift", text: "Then the world moved us closer. New titles, new reasons to speak.\n\nWhat started as 'work' became 'us.' I began to notice the way you carried yourself—with a grace that seemed effortless and a kindness that felt like sunlight." },
+            { title: "Chapter III: The Thread", text: "The office walls eventually faded, but our conversation didn’t.\n\nWe found a new home in the glow of our screens, weaving a thread of words that stretched from morning until the stars came out." },
+            { title: "Chapter IV: The Song", text: "I’ve learned the map of your reactions now. When I tell you that you are too bright for my eyes, or ask how it’s possible for someone to go to such lengths to be beautiful, you make those quiet, cute little noises." },
+            { title: "Chapter V: The Warmth", text: "Being near you feels like finally standing in the right place.\n\nIt is a peaceful warmth, but it is also a storm in my chest. When you smile at me, my heart pounds with a rhythm I can’t control." },
+            { title: "Chapter VI: The Realization", text: "I wrote this because words spoken out loud sometimes get lost in the heartbeat I feel when you're near.\n\nI eventually reached a point where 'just friends' felt like a beautiful book with the most important chapter missing." },
+            { 
+                title: "The Final Page: My Queen", 
+                isFinal: true,
+                text: "Now that we are walking this path together, I’ve fallen for you faster than I ever thought possible. Even when I’ve just seen you, I miss you the moment you leave my sight.\n\nI find myself constantly desiring the warmth of your hugs and the sweetness of your kisses. I promise to care for you with everything I am. I will forever treat you well, my Queen." 
+            }
+        ];
+
+        let currentPage = 0;
+        let yesScale = 1;
+
+        // Background Hearts
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }, 500);
+
+        // THE FIXED MOVE BUTTON LOGIC
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            
+            // Calculate boundaries
+            const padding = 50;
+            const winW = window.innerWidth;
+            const winH = window.innerHeight;
+
+            // Ensure button doesn't fly off the edge
+            const newX = Math.random() * (winW - btn.offsetWidth - (padding * 2)) + padding;
+            const newY = Math.random() * (winH - btn.offsetHeight - (padding * 2)) + padding;
+
+            btn.style.position = 'fixed';
+            btn.style.left = `${newX}px`;
+            btn.style.top = `${newY}px`;
+
+            // Grow Yes button
+            yesScale += 0.15;
+            const yesBtn = document.getElementById('yesBtn');
+            if(winW < 600 && yesScale > 3.5) yesScale = 3.5;
+            yesBtn.style.transform = `scale(${yesScale})`;
+        }
+
+        function sayYes() {
+            confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
+            document.getElementById('question').innerText = "I knew you would say YES! ❤️";
+            document.getElementById('mainButtons').style.display = 'none';
+            document.getElementById('storyBtn').style.display = 'block';
+        }
+
+        function openBook() { document.getElementById('bookModal').style.display = 'flex'; updateBookContent(); }
+        function closeBook() { document.getElementById('bookModal').style.display = 'none'; }
+        function changePage(step) { currentPage += step; updateBookContent(); }
+
+        function updateBookContent() {
+            const content = document.getElementById('bookContent');
+            const pageInfo = document.getElementById('pageIndicator');
+            const ch = chapters[currentPage];
+            
+            let galleryHtml = "";
+            if (ch.isFinal) {
+                galleryHtml = `
+                    <div class="gallery">
+                        <img src="photo1.jpg" onerror="this.style.display='none'">
+                        <img src="photo2.jpg" onerror="this.style.display='none'">
+                        <img src="photo3.jpg" onerror="this.style.display='none'">
+                        <img src="photo4.jpg" onerror="this.style.display='none'">
+                    </div>`;
+            }
+
+            content.innerHTML = `<h2>${ch.title}</h2><p style="white-space: pre-line;">${ch.text}</p>${galleryHtml}`;
+            pageInfo.innerText = `Page ${currentPage + 1} of ${chapters.length}`;
+            
+            document.getElementById('prevBtn').disabled = (currentPage === 0);
+            document.getElementById('nextBtn').disabled = (currentPage === chapters.length - 1);
+            content.scrollTop = 0;
+        }
+    </script>
+</body>
+</html>
