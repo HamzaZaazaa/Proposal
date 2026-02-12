@@ -1,31 +1,88 @@
-// Add your image filenames here exactly as they are named on GitHub
-const chapters = [
-    { 
-        title: "Chapter I: The Echo", 
-        image: "photo1.jpg", // <--- Put your filename here
-        text: "We started as two names on a list, two faces in a crowded room..." 
-    },
-    { 
-        title: "Chapter II: The Shift", 
-        image: "photo2.jpg", 
-        text: "Then the world moved us closer. New titles, new reasons to speak..." 
-    },
-    // ... repeat for other chapters. If no image, leave it as ""
-];
+<script>
+        // --- DATA SECTION: 4 IMAGES DISTRIBUTED ACROSS 7 PAGES ---
+        const chapters = [
+            { 
+                title: "Chapter I: The Echo", 
+                image: "photo1.jpg", 
+                text: "We started as two names on a list, two faces in a crowded room on a 'Welcome Day' that felt ordinary at the time.\n\nI didn’t know then that the girl sitting across the room would eventually become the reason I look forward to the morning. For months, we were planets in the same galaxy, orbiting but never touching." 
+            },
+            { 
+                title: "Chapter II: The Shift", 
+                image: "", 
+                text: "Then the world moved us closer. New titles, new reasons to speak.\n\nWhat started as 'work' became 'us.' I began to notice the way you carried yourself—with a grace that seemed effortless and a kindness that felt like sunlight." 
+            },
+            { 
+                title: "Chapter III: The Thread", 
+                image: "photo2.jpg", 
+                text: "The office walls eventually faded, but our conversation didn’t.\n\nWe found a new home in the glow of our screens, weaving a thread of words that stretched from morning until the stars came out." 
+            },
+            { 
+                title: "Chapter IV: The Song", 
+                image: "", 
+                text: "I’ve learned the map of your reactions now. When I tell you that you are too bright for my eyes, or ask how it’s possible for someone to go to such lengths to be beautiful, you make those quiet, cute little noises—the ones that tell me you can’t quite handle the praise." 
+            },
+            { 
+                title: "Chapter V: The Warmth", 
+                image: "photo3.jpg", 
+                text: "Being near you feels like finally standing in the right place.\n\nIt is a peaceful warmth, but it is also a storm in my chest. When you smile at me, my heart pounds with a rhythm I can’t control." 
+            },
+            { 
+                title: "Chapter VI: The Realization", 
+                image: "", 
+                text: "I wrote this because words spoken out loud sometimes get lost in the heartbeat I feel when you're near.\n\nI eventually reached a point where 'just friends' felt like a beautiful book with the most important chapter missing." 
+            },
+            { 
+                title: "The Final Page: My Queen", 
+                image: "photo4.jpg", 
+                text: "Now that we are walking this path together, I’ve fallen for you faster than I ever thought possible. Even when I’ve just seen you, I miss you the moment you leave my sight.\n\nI find myself constantly desiring the warmth of your hugs and the sweetness of your kisses. I promise to care for you with everything I am. I will forever treat you well, my Queen." 
+            }
+        ];
 
-// Update the updateBookContent function to show the image
-function updateBookContent() {
-    const content = document.getElementById('bookContent');
-    const pageInfo = document.getElementById('pageIndicator');
-    const ch = chapters[currentPage];
+        let currentPage = 0;
 
-    // This part creates the image HTML if an image exists
-    let imageHtml = ch.image ? `<img src="${ch.image}" style="width:100%; border-radius:10px; margin-bottom:15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">` : "";
+        function createHeart() {
+            const heart = document.createElement('div'); heart.classList.add('heart');
+            heart.innerHTML = '❤️'; heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+        setInterval(createHeart, 500);
 
-    content.innerHTML = `<h2>${ch.title}</h2>${imageHtml}<p>${ch.text}</p>`;
-    pageInfo.innerHTML = `Page ${currentPage + 1} of ${chapters.length}`;
-    
-    document.getElementById('prevBtn').disabled = (currentPage === 0);
-    document.getElementById('nextBtn').disabled = (currentPage === chapters.length - 1);
-    content.scrollTop = 0;
-}
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            btn.style.position = 'fixed';
+            const padding = 50;
+            const maxX = window.innerWidth - btn.offsetWidth - padding;
+            const maxY = window.innerHeight - btn.offsetHeight - padding;
+            btn.style.left = Math.max(padding, Math.floor(Math.random() * maxX)) + 'px';
+            btn.style.top = Math.max(padding, Math.floor(Math.random() * maxY)) + 'px';
+            document.getElementById('yesBtn').style.transform = `scale(${1 + (currentPage * 0.1 + 0.3)})`;
+        }
+
+        function sayYes() {
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+            document.getElementById('question').innerHTML = "I knew you would say YES! ❤️";
+            document.getElementById('mainButtons').style.display = 'none';
+            document.getElementById('storyBtn').style.display = 'inline-block';
+        }
+
+        function openBook() { document.getElementById('bookModal').style.display = 'flex'; updateBookContent(); }
+        function closeBook() { document.getElementById('bookModal').style.display = 'none'; }
+        function changePage(step) { currentPage += step; updateBookContent(); }
+
+        function updateBookContent() {
+            const content = document.getElementById('bookContent');
+            const pageInfo = document.getElementById('pageIndicator');
+            const ch = chapters[currentPage];
+            
+            let imgTag = ch.image ? `<img src="${ch.image}" alt="Us">` : "";
+            
+            content.innerHTML = `<h2>${ch.title}</h2>${imgTag}<p style="white-space: pre-line;">${ch.text}</p>`;
+            pageInfo.innerHTML = `Page ${currentPage + 1} of ${chapters.length}`;
+            
+            document.getElementById('prevBtn').disabled = (currentPage === 0);
+            document.getElementById('nextBtn').disabled = (currentPage === chapters.length - 1);
+            content.scrollTop = 0;
+        }
+    </script>
